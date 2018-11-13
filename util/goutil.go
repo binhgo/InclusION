@@ -61,7 +61,6 @@ func CheckAuth(username string, token string) bool {
 	u := model.NewUser(username)
 	err, user := u.QueryByUsername()
 	if err != nil {
-		log.Fatal(err)
 		return false
 	}
 
