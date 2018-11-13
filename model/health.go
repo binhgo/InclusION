@@ -3,9 +3,9 @@ package model
 import (
 	"github.com/globalsign/mgo/bson"
 	"time"
-	"InclusION/mdb"
 	"log"
-	"InclusION/static"
+	"github.com/InclusION/static"
+	"github.com/InclusION/mdb"
 )
 
 type Health struct {

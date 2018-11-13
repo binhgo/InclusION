@@ -3,9 +3,9 @@ package model
 import (
 	"time"
 	"github.com/globalsign/mgo/bson"
-	"InclusION/mdb"
 	"log"
-	"InclusION/static"
+	"github.com/InclusION/static"
+	"github.com/InclusION/mdb"
 )
 
 type User struct {

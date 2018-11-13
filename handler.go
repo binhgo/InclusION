@@ -2,17 +2,17 @@ package main
 
 import (
 	"net/http"
-	"InclusION/util"
 	"encoding/json"
 	"fmt"
 	"github.com/globalsign/mgo/bson"
-	"InclusION/mdb"
-	"InclusION/static"
 	"log"
 	"time"
 	"github.com/gorilla/mux"
-	"InclusION/model"
 	"strconv"
+	"github.com/InclusION/util"
+	"github.com/InclusION/mdb"
+	"InclusION/static"
+	"github.com/InclusION/model"
 )
 
 
@@ -171,7 +171,6 @@ func getAllBlogWithPaging(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, e.Error(), 400)
 		return
 	}
-
 
 	b := model.Blog{}
 	err, blogs := b.QueryAllPaging(i)

@@ -4,9 +4,9 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"time"
 	"image"
-	"InclusION/mdb"
-	"InclusION/static"
 	"github.com/pkg/errors"
+	"github.com/InclusION/mdb"
+	"InclusION/static"
 )
 
 type Blog struct {

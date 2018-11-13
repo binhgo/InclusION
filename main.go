@@ -5,7 +5,7 @@ import (
 	"log"
 	"github.com/gorilla/mux"
 	"time"
-	"InclusION/static"
+	"github.com/InclusION/static"
 )
 
 

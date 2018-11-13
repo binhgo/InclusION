@@ -4,7 +4,7 @@ import (
 	"github.com/globalsign/mgo"
 	"log"
 	"github.com/globalsign/mgo/bson"
-	"InclusION/static"
+	"github.com/InclusION/static"
 )
 
 func InitDB() *mgo.Database {
