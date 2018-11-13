@@ -16,6 +16,7 @@ func main() {
 
 	router := mux.NewRouter()
 
+	router.HandleFunc("/", oklah).Methods(static.HTTP_GET)
 	router.HandleFunc("/TestConnection", testConnection).Methods(static.HTTP_GET)
 	router.HandleFunc("/Register", register).Methods(static.HTTP_POST)
 	router.HandleFunc("/Login", login).Methods(static.HTTP_POST)
