@@ -6,7 +6,7 @@ import (
 	"image"
 	"github.com/pkg/errors"
 	"github.com/InclusION/mdb"
-	"InclusION/static"
+	"github.com/InclusION/static"
 )
 
 type Blog struct {
