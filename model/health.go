@@ -75,6 +75,23 @@ func (h *Health) QueryByUser(user User) (error, []Health) {
 	return nil, result
 }
 
+func (h *Health) QueryLastHealthByUser(user User) (error, Health) {
+
+	db := mdb.InitDB()
+
+	c := db.C(static.TBL_HEALTHS)
+
+	var result Health
+	err := c.Find(bson.M{"username": user.Username}).Sort("-timestamp").Limit(1).One(&result)
+	if err != nil {
+		return err, result
+	}
+
+	return nil, result
+
+}
+
+
 func (h *Health) UpdateById() {
 
 	updateObject := bson.M{"$set":

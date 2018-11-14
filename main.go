@@ -28,6 +28,7 @@ func main() {
 	router.HandleFunc("/Register", register).Methods(static.HTTP_POST)
 	router.HandleFunc("/Login", login).Methods(static.HTTP_POST)
 	router.HandleFunc("/SyncHealth", syncHealth).Methods(static.HTTP_POST)
+	router.HandleFunc("/GetLastHealth", getLastHealth).Methods(static.HTTP_POST)
 	router.HandleFunc("/UpdateProfile", updateProfile).Methods(static.HTTP_POST)
 	router.HandleFunc("/Blog/page/{no}", getAllBlogWithPaging).Methods(static.HTTP_GET)
 	router.HandleFunc("/Blog/{id}", getBlogById).Methods(static.HTTP_GET)
@@ -187,6 +188,38 @@ func syncHealth(w http.ResponseWriter, r *http.Request) {
 	util.HideSensitiveHealth(&health)
 
 	json.NewEncoder(w).Encode(&health)
+}
+
+
+func getLastHealth(w http.ResponseWriter, r *http.Request) {
+
+	util.CheckBodyNil(w, r)
+
+	err, u := util.DecodeRequestIntoUser(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	// test
+	log.Println(u)
+
+	isAuth := util.CheckAuth(u.Username, u.Token)
+	if isAuth == false {
+		http.Error(w, "Authentication fail.", 400)
+		return
+	}
+
+	health := model.Health{}
+
+	err, h := health.QueryLastHealthByUser(u)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	log.Println(u)
+	log.Println(h)
+
+	json.NewEncoder(w).Encode(&h)
 }
 
 
