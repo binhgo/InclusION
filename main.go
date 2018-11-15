@@ -13,17 +13,33 @@ import (
 	"fmt"
 	"github.com/InclusION/util"
 	"github.com/InclusION/mdb"
+	"github.com/gorilla/websocket"
 )
 
+var clients = make(map[*websocket.Conn]bool) // connected clients
+var broadcast = make(chan Message)
+
+// Configure the upgrader
+var upgrader = websocket.Upgrader{}
+
+type Message struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Message  string `json:"message"`
+}
 
 func main() {
+
+	// run  goroutine first
+	go handleMessages()
+
 
 	log.Printf("Server started. Listening on port %s", static.PORT)
 	log.Printf("UTC Time: %s", time.Now().UTC())
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", oklah).Methods(static.HTTP_GET)
+	//router.HandleFunc("/", oklah).Methods(static.HTTP_GET)
 	router.HandleFunc("/TestConnection", testConnection).Methods(static.HTTP_GET)
 	router.HandleFunc("/Register", register).Methods(static.HTTP_POST)
 	router.HandleFunc("/Login", login).Methods(static.HTTP_POST)
@@ -34,45 +50,66 @@ func main() {
 	router.HandleFunc("/Blog/{id}", getBlogById).Methods(static.HTTP_GET)
 
 	//chat
+	router.HandleFunc("/ws", handleConnections)
 
+	// files
+	fs := http.FileServer(http.Dir("./public"))
+	router.PathPrefix("/kk").Handler(http.StripPrefix("/kk", fs))
+
+	// start listening
 	err := http.ListenAndServe(static.PORT, router)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+}
 
+func handleConnections(w http.ResponseWriter, r *http.Request) {
 
+	log.Println("here")
 
-	// test
-	//coll := "pserson"
-	//
-	//id := bson.NewObjectId()
-	//user := model.User{id, 1, "hnb2018", "123456Aa@", "hb@gmail.com", time.Now()}
-	//mdb.Insert(coll, user)
-	//
-	//log.Println("before")
-	//users := mdb.QueryAll(coll)
-	//for _, v := range users {
-	//	log.Println(v)
-	//}
-	//log.Println("------")
-	//
-	//
-	//log.Println("update")
-	//mdb.Update(coll)
-	//log.Println("------")
-	//
-	//
-	//log.Println("after")
-	//users = mdb.QueryAll(coll)
-	//for _, v := range users {
-	//	log.Println(v)
-	//}
-	//log.Println("------")
-	//
-	//
-	//log.Println("end...")
-	// test
+	// Upgrade initial GET request to a websocket
+	ws, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Make sure we close the connection when the function returns
+	defer ws.Close()
+
+	// Register our new client
+	clients[ws] = true
+
+	for {
+		var msg Message
+		// Read in a new message as JSON and map it to a Message object
+		err := ws.ReadJSON(&msg)
+		if err != nil {
+			log.Printf("error: %v", err)
+			break
+		}
+
+		// Send the newly received message to the broadcast channel
+		broadcast <- msg
+	}
+}
+
+func handleMessages() {
+	for {
+
+		// Grab the next message from the broadcast channel
+		msg := <-broadcast
+
+		// Send it out to every client that is currently connected
+		for client := range clients {
+
+			err := client.WriteJSON(msg)
+			if err != nil {
+				log.Printf("error: %v", err)
+			}
+
+		}
+	}
 }
 
 
