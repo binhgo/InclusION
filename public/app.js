@@ -10,7 +10,8 @@ new Vue({
         joined: false // True if email and username have been filled in
     }, created: function() {
         var self = this;
-        this.ws = new WebSocket('wss://' + window.location.host + '/ws');
+        //this.ws = new WebSocket('wss://' + window.location.host + '/ws');
+        this.ws = new WebSocket('wss://172.217.160.148:8080/ws');
         this.ws.addEventListener('message', function(e) {
             var msg = JSON.parse(e.data);
             self.chatContent += '<div class="chip">'
