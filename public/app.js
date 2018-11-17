@@ -8,10 +8,9 @@ new Vue({
         email: null, // Email address used for grabbing an avatar
         username: null, // Our username
         joined: false // True if email and username have been filled in
-    },
-    created: function() {
+    }, created: function() {
         var self = this;
-        this.ws = new WebSocket('ws://127.0.0.1:8080/ws');
+        this.ws = new WebSocket('ws://' + window.location.host + '/ws');
         this.ws.addEventListener('message', function(e) {
             var msg = JSON.parse(e.data);
             self.chatContent += '<div class="chip">'
@@ -35,8 +34,7 @@ new Vue({
                     ));
                 this.newMsg = ''; // Reset newMsg
             }
-        },
-        join: function () {
+        }, join: function () {
             if (!this.email) {
                 Materialize.toast('You must enter an email', 2000);
                 return
