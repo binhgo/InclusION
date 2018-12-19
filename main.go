@@ -14,6 +14,11 @@ import (
 	"github.com/InclusION/util"
 	"github.com/InclusION/mdb"
 	"github.com/gorilla/websocket"
+	"github.com/centrifugal/centrifuge"
+	"os"
+	"os/signal"
+	"syscall"
+	"context"
 )
 
 var clients = make(map[*websocket.Conn]bool) // connected clients
@@ -29,10 +34,8 @@ type Message struct {
 }
 
 func main() {
-
 	// run  goroutine first
 	go handleMessages()
-
 
 	log.Printf("Server started. Listening on port %s", static.PORT)
 	log.Printf("UTC Time: %s", time.Now().UTC())
@@ -49,20 +52,106 @@ func main() {
 	router.HandleFunc("/Blog/page/{no}", getAllBlogWithPaging).Methods(static.HTTP_GET)
 	router.HandleFunc("/Blog/{id}", getBlogById).Methods(static.HTTP_GET)
 
-	//chat
+	//chat gorilla
 	router.HandleFunc("/ws", handleConnections)
 
-	// files
-	fs := http.FileServer(http.Dir("./public"))
-	router.PathPrefix("/kk").Handler(http.StripPrefix("/kk", fs))
+	// centrifuge chat
+	node := initCentrifuge()
+	router.Handle("/connection/websocket", centrifuge.NewWebsocketHandler(node, centrifuge.WebsocketConfig{}))
 
-	// start listening
-	err := http.ListenAndServe(static.PORT, router)
-	if err != nil {
-		log.Fatal(err)
+	// files
+	fs := http.FileServer(http.Dir("./chat"))
+	router.PathPrefix("/chat").Handler(http.StripPrefix("/chat", fs))
+
+	// Start HTTP server.
+	go func() {
+		//if err := http.ListenAndServe(":8000", nil); err != nil {
+		//	panic(err)
+		//}
+
+		// start listening
+		err := http.ListenAndServe(static.PORT, router)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	}()
+
+	// Run program until interrupted.
+	waitExitSignal(node)
+}
+
+func handleLog(e centrifuge.LogEntry) {
+	log.Printf("%s: %v", e.Message, e.Fields)
+}
+
+// Wait until program interrupted. When interrupted gracefully shutdown Node.
+func waitExitSignal(n *centrifuge.Node) {
+	sigs := make(chan os.Signal, 1)
+	done := make(chan bool, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+		n.Shutdown(ctx)
+		done <- true
+	}()
+	<-done
+}
+
+func initCentrifuge() *centrifuge.Node {
+
+	cfg := centrifuge.DefaultConfig
+	cfg.ClientInsecure = true
+	cfg.Publish = true
+	node, _ := centrifuge.New(cfg)
+
+	node.On().Connect(func(ctx context.Context, client *centrifuge.Client, e centrifuge.ConnectEvent) centrifuge.ConnectReply {
+
+		client.On().Subscribe(func(e centrifuge.SubscribeEvent) centrifuge.SubscribeReply {
+			log.Printf("client subscribes on channel %s", e.Channel)
+			return centrifuge.SubscribeReply{}
+		})
+
+		client.On().Publish(func(e centrifuge.PublishEvent) centrifuge.PublishReply {
+			log.Printf("client publishes into channel %s: %s", e.Channel, string(e.Data))
+
+			//out, err1 := exec.Command("python3", "chatbot.py", "-q", string(e.Data)).Output()
+			//if err1 != nil {
+			//	log.Println("ERROR")
+			//	log.Fatal(err1)
+			//}
+			//fmt.Printf("Output \n%s", out)
+
+
+			return centrifuge.PublishReply{}
+		})
+
+		// Set Disconnect Handler to react on client disconnect events.
+		client.On().Disconnect(func(e centrifuge.DisconnectEvent) centrifuge.DisconnectReply {
+			log.Printf("client disconnected")
+			return centrifuge.DisconnectReply{}
+		})
+
+		// In our example transport will always be Websocket but it can also be SockJS.
+		transportName := client.Transport().Name()
+		// In our example clients connect with JSON protocol but it can also be Protobuf.
+		transportEncoding := client.Transport().Encoding()
+
+		log.Printf("client connected via %s (%s)", transportName, transportEncoding)
+		return centrifuge.ConnectReply{}
+	})
+
+	node.SetLogHandler(centrifuge.LogLevelDebug, handleLog)
+
+	if err := node.Run(); err != nil {
+		panic(err)
 	}
 
+	return node
 }
+
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
 
@@ -111,8 +200,6 @@ func handleMessages() {
 		}
 	}
 }
-
-
 
 func oklah(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, your connection is fine. %s!", r.URL.Path[1:])

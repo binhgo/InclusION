@@ -37,6 +37,10 @@ type User struct {
 	TokenExpiryTime time.Time
 
 	DeletedAt time.Time
+
+
+	// chat
+	ClientId string
 }
 
 
