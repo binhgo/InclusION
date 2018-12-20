@@ -2,11 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84a9932a-38a8-4ab4-93e1-41c97dc892a9" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/chat/chatmanager.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/chat/autobot.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/room.go" beforeDir="false" afterPath="$PROJECT_DIR$/model/room.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util/goutil.go" beforeDir="false" afterPath="$PROJECT_DIR$/util/goutil.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -145,6 +142,7 @@
         <option value="$PROJECT_DIR$/model/room.go" />
         <option value="$PROJECT_DIR$/chat/chatmanager.go" />
         <option value="$PROJECT_DIR$/main.go" />
+        <option value="$PROJECT_DIR$/chat/autobot.go" />
       </list>
     </option>
   </component>
@@ -177,31 +175,6 @@
               <item name="Root" type="cbb8eebc:String" user="Root" />
               <item name="InclusION" type="cbb8eebc:String" user="InclusION" />
               <item name="chat" type="cbb8eebc:String" user="chat" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="InclusION" type="cbb8eebc:String" user="InclusION" />
-              <item name="mdb" type="cbb8eebc:String" user="mdb" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="InclusION" type="cbb8eebc:String" user="InclusION" />
-              <item name="model" type="cbb8eebc:String" user="model" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="InclusION" type="cbb8eebc:String" user="InclusION" />
-              <item name="public" type="cbb8eebc:String" user="public" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="InclusION" type="cbb8eebc:String" user="InclusION" />
-              <item name="static" type="cbb8eebc:String" user="static" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="InclusION" type="cbb8eebc:String" user="InclusION" />
-              <item name="util" type="cbb8eebc:String" user="util" />
             </path>
           </expand>
           <select />
@@ -249,7 +222,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/InclusION">
+  <component name="RunManager" selected="Go Build.go build autobot.go">
     <configuration default="true" type="GoAppEngineRunConfiguration" factoryName="Go App Engine">
       <working_directory value="$PROJECT_DIR$" />
     </configuration>
@@ -259,6 +232,15 @@
       <go_parameters value="-i" />
       <kind value="PACKAGE" />
       <filePath value="$PROJECT_DIR$/" />
+      <package value="github.com/InclusION" />
+      <directory value="$PROJECT_DIR$/" />
+    </configuration>
+    <configuration name="go build autobot.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="InclusION" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <go_parameters value="-i" />
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/chat/autobot.go" />
       <package value="github.com/InclusION" />
       <directory value="$PROJECT_DIR$/" />
     </configuration>
@@ -293,9 +275,11 @@
       <item itemvalue="Go Build.go build github.com/InclusION" />
       <item itemvalue="Go Build.haha" />
       <item itemvalue="Go Build.go build github.com/InclusION/.idea" />
+      <item itemvalue="Go Build.go build autobot.go" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build autobot.go" />
         <item itemvalue="Go Build.go build github.com/InclusION/.idea" />
       </list>
     </recent_temporary>
@@ -304,7 +288,7 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19241774" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19241774" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="right" id="Database" order="3" />
@@ -312,7 +296,7 @@
       <window_info anchor="bottom" id="Run" order="2" weight="0.32969698" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.32969698" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.32969698" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -608,6 +592,16 @@
           <caret line="28" column="16" lean-forward="true" selection-start-line="28" selection-start-column="16" selection-end-line="28" selection-end-column="16" />
           <folding>
             <element signature="e#14#61#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chat/autobot.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="87" column="45" lean-forward="true" selection-start-line="87" selection-start-column="45" selection-end-line="87" selection-end-column="45" />
+          <folding>
+            <element signature="e#104#199#0" expanded="true" />
           </folding>
         </state>
       </provider>
