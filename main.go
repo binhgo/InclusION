@@ -206,7 +206,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 	util.CheckBodyNil(w, r)
 
-	err, user := util.DecodeRequestIntoUser(w, r)
+	err, user := model.DecodeRequestIntoUser(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -230,7 +230,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	util.CheckBodyNil(w, r)
 
-	err, user := util.DecodeRequestIntoUser(w, r)
+	err, user := model.DecodeRequestIntoUser(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -270,7 +270,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	// because login, so that we have to return Token, cannot hide it
 	u.Token = util.Hash(fmt.Sprintf("%s%s%s%d", u.Username, u.Password, u.Email, u.LoginNonce))
 
-	util.HideSensitiveUser(&u)
+	model.HideSensitiveUser(&u)
 
 	json.NewEncoder(w).Encode(&u)
 }
@@ -280,7 +280,7 @@ func syncHealth(w http.ResponseWriter, r *http.Request) {
 
 	util.CheckBodyNil(w, r)
 
-	err, health := util.DecodeRequestIntoHealth(w, r)
+	err, health := model.DecodeRequestIntoHealth(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -288,7 +288,7 @@ func syncHealth(w http.ResponseWriter, r *http.Request) {
 	// test
 	log.Println(health)
 
-	isAuth := util.CheckAuth(health.Username, health.Token)
+	isAuth := model.CheckAuth(health.Username, health.Token)
 	if isAuth == false {
 		http.Error(w, "Authentication fail.", 400)
 		return
@@ -301,7 +301,7 @@ func syncHealth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.HideSensitiveHealth(&health)
+	model.HideSensitiveHealth(&health)
 
 	json.NewEncoder(w).Encode(&health)
 }
@@ -311,7 +311,7 @@ func getLastHealth(w http.ResponseWriter, r *http.Request) {
 
 	util.CheckBodyNil(w, r)
 
-	err, u := util.DecodeRequestIntoUser(w, r)
+	err, u := model.DecodeRequestIntoUser(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -319,7 +319,7 @@ func getLastHealth(w http.ResponseWriter, r *http.Request) {
 	// test
 	log.Println(u)
 
-	isAuth := util.CheckAuth(u.Username, u.Token)
+	isAuth := model.CheckAuth(u.Username, u.Token)
 	if isAuth == false {
 		http.Error(w, "Authentication fail.", 400)
 		return
@@ -343,13 +343,13 @@ func updateProfile(w http.ResponseWriter, r *http.Request) {
 
 	util.CheckBodyNil(w, r)
 
-	err, user := util.DecodeRequestIntoUser(w, r)
+	err, user := model.DecodeRequestIntoUser(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
 	}
 
-	isAuth := util.CheckAuth(user.Username, user.Token)
+	isAuth := model.CheckAuth(user.Username, user.Token)
 	if isAuth == false {
 		http.Error(w, "Authentication fail.", 400)
 		return
@@ -368,7 +368,7 @@ func updateProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	util.HideSensitiveUser(&user)
+	model.HideSensitiveUser(&user)
 
 	json.NewEncoder(w).Encode(&user)
 }
@@ -416,7 +416,7 @@ func findUser(w http.ResponseWriter, r *http.Request) {
 
 	util.CheckBodyNil(w, r)
 
-	err, user := util.DecodeRequestIntoUser(w, r)
+	err, user := model.DecodeRequestIntoUser(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
@@ -437,7 +437,7 @@ func findUser(w http.ResponseWriter, r *http.Request) {
 func createChannel11(w http.ResponseWriter, r *http.Request) {
 	util.CheckBodyNil(w, r)
 
-	err, room := util.DecodeRequestIntoRoom(w, r)
+	err, room := model.DecodeRequestIntoRoom(w, r)
 	if err != nil {
 		http.Error(w, err.Error(), 400)
 		return
