@@ -19,6 +19,7 @@ import (
 	"os/signal"
 	"syscall"
 	"context"
+	"github.com/InclusION/chat"
 )
 
 var clients = make(map[*websocket.Conn]bool) // connected clients
@@ -51,6 +52,10 @@ func main() {
 	router.HandleFunc("/UpdateProfile", updateProfile).Methods(static.HTTP_POST)
 	router.HandleFunc("/Blog/page/{no}", getAllBlogWithPaging).Methods(static.HTTP_GET)
 	router.HandleFunc("/Blog/{id}", getBlogById).Methods(static.HTTP_GET)
+
+	//chat
+	router.HandleFunc("/Chat/FindUser", findUser).Methods(static.HTTP_POST)
+	router.HandleFunc("/Chat/CreateChannel", createChannel11).Methods(static.HTTP_POST)
 
 	//chat gorilla
 	router.HandleFunc("/ws", handleConnections)
@@ -116,15 +121,6 @@ func initCentrifuge() *centrifuge.Node {
 
 		client.On().Publish(func(e centrifuge.PublishEvent) centrifuge.PublishReply {
 			log.Printf("client publishes into channel %s: %s", e.Channel, string(e.Data))
-
-			//out, err1 := exec.Command("python3", "chatbot.py", "-q", string(e.Data)).Output()
-			//if err1 != nil {
-			//	log.Println("ERROR")
-			//	log.Fatal(err1)
-			//}
-			//fmt.Printf("Output \n%s", out)
-
-
 			return centrifuge.PublishReply{}
 		})
 
@@ -199,10 +195,6 @@ func handleMessages() {
 
 		}
 	}
-}
-
-func oklah(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, your connection is fine. %s!", r.URL.Path[1:])
 }
 
 func testConnection(w http.ResponseWriter, r *http.Request) {
@@ -418,4 +410,46 @@ func getBlogById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(&blog)
+}
+
+func findUser(w http.ResponseWriter, r *http.Request) {
+
+	util.CheckBodyNil(w, r)
+
+	err, user := util.DecodeRequestIntoUser(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	//err, u := user.QueryByUsername()
+	//if err != nil {
+	//	http.Error(w, err.Error(), 400)
+	//	return
+	//}
+
+	u := chat.FindUser(user.Username)
+
+	json.NewEncoder(w).Encode(&u)
+}
+
+
+func createChannel11(w http.ResponseWriter, r *http.Request) {
+	util.CheckBodyNil(w, r)
+
+	err, room := util.DecodeRequestIntoRoom(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	room11 := chat.CreateChannel(room)
+
+	//err, room11 := room.CreateRoom1To1()
+	//if err != nil {
+	//	http.Error(w, err.Error(), 400)
+	//	return
+	//}
+
+	json.NewEncoder(w).Encode(&room11)
 }

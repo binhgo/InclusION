@@ -42,6 +42,19 @@ func DecodeRequestIntoUser(w http.ResponseWriter, r *http.Request) (error, model
 	return nil, user
 }
 
+func DecodeRequestIntoRoom(w http.ResponseWriter, r *http.Request) (error, model.Room) {
+
+	decoder := json.NewDecoder(r.Body)
+
+	var room model.Room
+	err := decoder.Decode(&room)
+	if err != nil {
+		return err, room
+	}
+
+	return nil, room
+}
+
 func DecodeRequestIntoHealth(w http.ResponseWriter, r *http.Request) (error, model.Health) {
 
 	decoder := json.NewDecoder(r.Body)
