@@ -36,17 +36,17 @@ func (h *Health) Insert() error {
 	return nil
 }
 
-func (h *Health) QueryAll() []Health {
-	result := mdb.QueryAll(static.TBL_HEALTHS)
-	healths, ok := result.([]Health)
-
-	if ok == false {
-		log.Println("No results")
-		return nil
-	} else {
-		return healths
-	}
-}
+//func (h *Health) QueryAll() []Health {
+//	result := mdb.QueryAll(static.TBL_HEALTHS)
+//	healths, ok := result.([]Health)
+//
+//	if ok == false {
+//		log.Println("No results")
+//		return nil
+//	} else {
+//		return healths
+//	}
+//}
 
 func (h *Health) QueryById() {
 

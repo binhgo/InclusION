@@ -26,7 +26,6 @@ func (r *Room) CreateRoom1To1() (error, Room) {
 func (r *Room) CreateRoomMany(users []User) (error, Room) {
 	var usernames []string
 	for i, u := range users {
-		//append(usernames, u.Username)
 		usernames[i] = u.Username
 	}
 

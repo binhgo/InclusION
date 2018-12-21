@@ -73,7 +73,7 @@ $(document).ready(function(){
         console.log('disconnected')
     });
 
-    var sub = centrifuge.subscribe("chat", function(message) {
+    var sub = centrifuge.subscribe("main6868", function(message) {
         // call chatbot API here
         // get response from chatbot
         // and display on the UI
@@ -84,9 +84,7 @@ $(document).ready(function(){
 
         if(message.info.client == clientID) {
             insertChat("me", message.data, 0)
-        }
-        else
-        {
+        } else {
             insertChat("you", message.data, 0)
         }
 

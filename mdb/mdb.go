@@ -61,11 +61,11 @@ func QueryById(collection string, objectId bson.ObjectId) interface{} {
 }
 
 
-func QueryAll(collection string) interface{} {
+func QueryAll(collection string) []interface{} {
 	db := InitDB()
 	c := db.C(collection)
 
-	var results interface{}
+	var results []interface{}
 	err := c.Find(nil).All(&results)
 	if err != nil {
 		log.Fatal(err)

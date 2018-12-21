@@ -6,6 +6,7 @@ import (
 	"log"
 	"github.com/InclusION/static"
 	"github.com/InclusION/mdb"
+	"github.com/mitchellh/mapstructure"
 )
 
 type User struct {
@@ -73,15 +74,24 @@ func (u *User) Insert() error {
 }
 
 func (u *User) QueryAll() []User {
-	result := mdb.QueryAll(static.TBL_USERS)
-	users, ok := result.([]User)
+	results := mdb.QueryAll(static.TBL_USERS)
 
-	if ok == false {
-		log.Println("No results")
-		return nil
-	} else {
-		return users
+	//log.Printf("Results %s", results)
+
+	var users []User
+
+	for _, u := range results {
+
+		var user User
+		err := mapstructure.Decode(u, &user)
+		if err  != nil {
+			log.Fatal(err)
+		}
+
+		users = append(users, user)
 	}
+
+	return users
 }
 
 
