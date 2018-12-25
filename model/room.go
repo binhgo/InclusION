@@ -4,6 +4,8 @@ import (
 	"sort"
 	"github.com/InclusION/util"
 	"log"
+	"time"
+	rand2 "math/rand"
 )
 
 type Room struct {
@@ -33,6 +35,18 @@ func (r *Room) CreateRoomMany(users []User) (error, Room) {
 	channelID := util.Hash(r1)
 
 	return nil, Room{ChannelId:channelID, RoomName:r1}
+}
+
+
+func (r *Room) CreateRandomRoom() (error, Room) {
+
+	//max := big.Int{true, 100000000000}
+
+	str := string(rand2.Int63n(10000000)) + time.Now().String()
+
+	channelID := util.Hash(str)
+
+	return nil, Room{ChannelId:channelID, RoomName:str}
 }
 
 

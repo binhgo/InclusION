@@ -48,6 +48,20 @@ func DecodeRequestIntoHealth(w http.ResponseWriter, r *http.Request) (error, Hea
 	return nil, health
 }
 
+func DecodeRequestIntoCommand(cmd string) (error, Command) {
+	r := strings.NewReader(cmd)
+	decoder := json.NewDecoder(r)
+
+	var c Command
+	err := decoder.Decode(&c)
+
+	if err != nil {
+		return err, c
+	}
+
+	return nil, c
+}
+
 func CheckAuth(username string, token string) bool {
 
 	// query user information

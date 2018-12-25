@@ -1,17 +1,20 @@
 package main
 
 // Connect, subscribe on channel, publish into channel, read presence and history info.
+
 import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os/exec"
 	"time"
 
 	"github.com/centrifugal/centrifuge-go"
-	"github.com/InclusION/model"
 )
 
 var clientID = ""
+var channelId = "chatbot"
+var url = "ws://localhost:8000/connection/websocket"
 
 type eventHandler struct{}
 
@@ -29,48 +32,19 @@ type subEventHandler struct{}
 
 func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.PublishEvent) {
 	log.Println(fmt.Sprintf("New publication received from channel %s: %s", sub.Channel(), string(e.Data)))
-	//log.Println(e.Data)
-	//log.Println(e.GetInfo().Client)
-	//log.Println(clientID)
 
 	if e.GetInfo().Client != clientID {
 
-		if sub.Channel() == "main6868" {
+		out, err := exec.Command("python3", "chatbot.py", "-q", string(e.Data)).Output()
+		if err != nil {
+			log.Printf("ERROR Chatbot: %s", err)
+		}
+		fmt.Printf("Chatbot response: %s", out)
 
-			str := string(e.Data)
-			cmd := str[1 : len(str)-1]
-
-			var response string
-
-			if cmd == "cmd findUser" {
-
-				u := model.User{}
-				allUsers := u.QueryAll()
-
-
-				var allUsernames string
-
-				for _, u := range allUsers {
-					allUsernames += u.Username + " \n "
-				}
-
-				response = allUsernames
-
-			} else if cmd == "cmd createRoom" {
-				// create random channel id and return
-				response = "this is sample random channel id"
-
-			} else {
-				// return cmd not found
-				response = "cmd not found"
-			}
-
-			dataBytes, _ := json.Marshal(response)
-			err := sub.Publish(dataBytes)
-			if err != nil {
-				log.Println("ERROR Publish")
-				log.Println(err)
-			}
+		dataBytes, _ := json.Marshal(string(out))
+		err = sub.Publish(dataBytes)
+		if err != nil {
+			log.Printf("ERROR Publish: %s", err)
 		}
 	}
 }
@@ -86,10 +60,7 @@ func (h *subEventHandler) OnLeave(sub *centrifuge.Subscription, e centrifuge.Lea
 func main() {
 
 	exit := make(chan bool)
-
 	started := time.Now()
-
-	url := "ws://localhost:8080/connection/websocket"
 
 	c := centrifuge.New(url, centrifuge.DefaultConfig())
 	defer c.Close()
@@ -103,7 +74,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	sub, err := c.NewSubscription("main6868")
+	sub, err := c.NewSubscription(channelId)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -118,6 +89,13 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	// presence, err := sub.Presence()
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+	// log.Printf("%d clients in channel %s", len(presence), sub.Channel())
+
 	<-exit
-	log.Printf("%s", time.Since(started))
+
+	log.Printf("END: %s", time.Since(started))
 }

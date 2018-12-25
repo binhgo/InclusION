@@ -5,6 +5,7 @@ var you = {};
 you.avatar = "https://en.gravatar.com/userimage/142709731/8aa2297829b3ecd61f14a7ed89f39acc.png";
 
 var clientID;
+var channelID = "chatbot";
 
 function formatAMPM(date) {
     var hours = date.getHours();
@@ -73,11 +74,7 @@ $(document).ready(function(){
         console.log('disconnected')
     });
 
-    var sub = centrifuge.subscribe("main6868", function(message) {
-        // call chatbot API here
-        // get response from chatbot
-        // and display on the UI
-        //drawText(JSON.stringify(message) + '<br>');
+    var sub = centrifuge.subscribe(channelID, function(message) {
 
         console.log(message.info.client)
         console.log(clientID)
