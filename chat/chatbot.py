@@ -16,17 +16,20 @@ bot = ChatBot(
         },
         {
             'import_path': 'chatterbot.logic.LowConfidenceAdapter',
-            'threshold': 0.65,
+            'threshold': 0.5,
             'default_response': 'I am sorry, but I do not understand.'
         }
     ],
     #input_adapter="chatterbot.input.TerminalAdapter",
     #output_adapter="chatterbot.output.TerminalAdapter",
     database="../database.db"
+    # un-comment the line below to train the bot before calling it from golang
+    # train 1 time only
     #trainer="chatterbot.trainers.ChatterBotCorpusTrainer"
 )
 
-
+# un-comment the line below to train the bot before calling it from golang
+# train 1 time only
 #bot.train('chatterbot.corpus.english')
 
 def main(argv):

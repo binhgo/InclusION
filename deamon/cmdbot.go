@@ -11,35 +11,21 @@ import (
 	"github.com/InclusION/model"
 )
 
-var clientID = ""
-var channelId = "main6868"
-var url = "ws://localhost:8000/connection/websocket"
+var clientID string
+var cmdChannel = "main6868"
+var url = "ws://localhost:8080/connection/websocket"
 
 type eventHandler struct{}
+type subEventHandler struct{}
 
 func (h *eventHandler) OnConnect(c *centrifuge.Client, e centrifuge.ConnectEvent) {
 	clientID = e.ClientID
-	log.Printf("chatbot connected, clientID: %s", clientID)
+	log.Printf("chatbot connected! chatbot id: %s", clientID)
 	log.Printf("chatbot is listening...")
 }
 
 func (h *eventHandler) OnDisconnect(c *centrifuge.Client, e centrifuge.DisconnectEvent) {
 	log.Println("client diconnected")
-}
-
-type subEventHandler struct{}
-
-func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.PublishEvent) {
-	log.Println(fmt.Sprintf("New publication received from channel %s: %s", sub.Channel(), string(e.Data)))
-
-	if e.GetInfo().Client != clientID {
-		if sub.Channel() == channelId {
-			str := string(e.Data)
-			cmd := str[1 : len(str)-1]
-
-			handleCmd(cmd, sub)
-		}
-	}
 }
 
 func (h *subEventHandler) OnJoin(sub *centrifuge.Subscription, e centrifuge.JoinEvent) {
@@ -50,9 +36,25 @@ func (h *subEventHandler) OnLeave(sub *centrifuge.Subscription, e centrifuge.Lea
 	log.Println(fmt.Sprintf("User %s (client ID %s) left channel %s", e.User, e.Client, sub.Channel()))
 }
 
-func main() {
+func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.PublishEvent) {
+	log.Println(fmt.Sprintf("New publication received from channel %s: %s", sub.Channel(), string(e.Data)))
 
-	exit := make(chan bool)
+	if e.GetInfo().Client != clientID {
+		if sub.Channel() == cmdChannel {
+			str := string(e.Data)
+			cmd := str[1 : len(str)-1]
+
+			HandleCommand(cmd, sub)
+		}
+	}
+}
+
+func waitExitSignal() {
+	wait := make(chan int)
+	<-wait
+}
+
+func main() {
 	started := time.Now()
 
 	c := centrifuge.New(url, centrifuge.DefaultConfig())
@@ -67,7 +69,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	sub, err := c.NewSubscription(channelId)
+	sub, err := c.NewSubscription(cmdChannel)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -82,34 +84,35 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	<-exit
+	waitExitSignal()
 	log.Printf("END: %s", time.Since(started))
 }
 
 
-func handleCmd(cmdJson string, sub *centrifuge.Subscription) {
+var actionGetAllUsers = "cmd allUsers"
+var actionCreateRoom11 = "cmd createRoom11"
 
+func HandleCommand(cmdJson string, sub *centrifuge.Subscription) {
 	var response string
 
 	c := model.Command{}
 	err, cmd := c.ParseCommand(cmdJson)
 	if err != nil {
-		log.Println("Error in ParseCommand")
 		response = "sorry, I only understand json"
 	}
 
-	if cmd.Action == "cmd allUsers" {
+	if cmd.Action == actionGetAllUsers {
 		u := model.User{}
 		allUsers := u.QueryAll()
 		var allUsernames string
 
 		for _, u := range allUsers {
-			allUsernames += u.Username + "-"
+			allUsernames += u.Username + "--"
 		}
 
 		response = allUsernames
 
-	} else if cmd.Action == "cmd createRoom11" {
+	} else if cmd.Action == actionCreateRoom11 {
 
 		u1 := cmd.Arg1
 		u2 := cmd.Arg2
@@ -118,26 +121,26 @@ func handleCmd(cmdJson string, sub *centrifuge.Subscription) {
 		r := model.Room{Username1:u1, Username2:u2}
 		err, room := r.CreateRoom1To1()
 		if err != nil {
-			log.Println("Error in CreateRoom1To1")
 			response = err.Error()
 		}
 
-		res, err := json.Marshal(room)
+		_, err = json.Marshal(room)
 		if err != nil {
-			log.Fatal(err)
+			response = err.Error()
 		}
-		log.Println(res)
 
 		response = room.ChannelId
 
 	} else {
-		// return cmd not found
 		response = "cmd not found"
 	}
 
-	dataBytes, _ := json.Marshal(response)
-	err = sub.Publish(dataBytes)
+	dataBytes, err := json.Marshal(response)
+	if err != nil {
+		log.Printf("Error in json.Marshal: %s", err)
+	}
 
+	err = sub.Publish(dataBytes)
 	if err != nil {
 		log.Printf("ERROR Publish: %s", err)
 	}

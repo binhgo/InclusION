@@ -12,11 +12,12 @@ import (
 	"github.com/centrifugal/centrifuge-go"
 )
 
+var url = "ws://localhost:8080/connection/websocket"
+var chatbotChannel = "chatbot"
 var clientID = ""
-var channelId = "chatbot"
-var url = "ws://localhost:8000/connection/websocket"
 
 type eventHandler struct{}
+type subEventHandler struct{}
 
 func (h *eventHandler) OnConnect(c *centrifuge.Client, e centrifuge.ConnectEvent) {
 	clientID = e.ClientID
@@ -28,14 +29,21 @@ func (h *eventHandler) OnDisconnect(c *centrifuge.Client, e centrifuge.Disconnec
 	log.Println("client diconnected")
 }
 
-type subEventHandler struct{}
+
+func (h *subEventHandler) OnJoin(sub *centrifuge.Subscription, e centrifuge.JoinEvent) {
+	log.Println(fmt.Sprintf("User %s (client ID %s) joined channel %s", e.User, e.Client, sub.Channel()))
+}
+
+func (h *subEventHandler) OnLeave(sub *centrifuge.Subscription, e centrifuge.LeaveEvent) {
+	log.Println(fmt.Sprintf("User %s (client ID %s) left channel %s", e.User, e.Client, sub.Channel()))
+}
+
 
 func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.PublishEvent) {
 	log.Println(fmt.Sprintf("New publication received from channel %s: %s", sub.Channel(), string(e.Data)))
 
 	if e.GetInfo().Client != clientID {
-
-		out, err := exec.Command("python3", "chatbot.py", "-q", string(e.Data)).Output()
+		out, err := exec.Command("python3", "../chat/chatbot.py", "-q", string(e.Data)).Output()
 		if err != nil {
 			log.Printf("ERROR Chatbot: %s", err)
 		}
@@ -49,17 +57,13 @@ func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.P
 	}
 }
 
-func (h *subEventHandler) OnJoin(sub *centrifuge.Subscription, e centrifuge.JoinEvent) {
-	log.Println(fmt.Sprintf("User %s (client ID %s) joined channel %s", e.User, e.Client, sub.Channel()))
+func waitExitSignal() {
+	wait := make(chan int)
+	<-wait
 }
 
-func (h *subEventHandler) OnLeave(sub *centrifuge.Subscription, e centrifuge.LeaveEvent) {
-	log.Println(fmt.Sprintf("User %s (client ID %s) left channel %s", e.User, e.Client, sub.Channel()))
-}
 
 func main() {
-
-	exit := make(chan bool)
 	started := time.Now()
 
 	c := centrifuge.New(url, centrifuge.DefaultConfig())
@@ -74,7 +78,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	sub, err := c.NewSubscription(channelId)
+	sub, err := c.NewSubscription(chatbotChannel)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -95,7 +99,7 @@ func main() {
 	// }
 	// log.Printf("%d clients in channel %s", len(presence), sub.Channel())
 
-	<-exit
-
+	waitExitSignal()
 	log.Printf("END: %s", time.Since(started))
+
 }
