@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/mux"
 	"strconv"
 	"github.com/InclusION/chat"
+	"github.com/InclusION/fcm"
 )
 
 
@@ -264,7 +265,108 @@ func createChannel11(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// go routine push notification
+	go fcm.NotifyAllDevicesOfUser(rRoom.Username2, room11.ChannelId)
+
 	json.NewEncoder(w).Encode(&room11)
 }
+
+func addToken(w http.ResponseWriter, r *http.Request) {
+
+	util.CheckBodyNil(w, r)
+
+	err, p := model.DecodeRequestIntoPhone(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	p.MongoID = bson.NewObjectId()
+
+	err = p.Insert()
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	phone := mdb.QueryById(static.TBL_DEVICES, p.MongoID)
+
+	json.NewEncoder(w).Encode(&phone)
+}
+
+
+func removeToken(w http.ResponseWriter, r *http.Request) {
+
+	util.CheckBodyNil(w, r)
+
+	err, p := model.DecodeRequestIntoPhone(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	err = p.HardDelete()
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	json.NewEncoder(w).Encode(&p)
+}
+
+
+func pushToDevice(w http.ResponseWriter, r *http.Request) {
+	// device token
+	// data to push
+
+	util.CheckBodyNil(w, r)
+
+	err, mess := model.DecodeRequestIntoFcmMessage(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	if len(mess.DeviceToken) <= 0 {
+		http.Error(w, "Device token cannot be nil", 400)
+		return
+	}
+
+	err = fcm.Notify1Device(mess.DeviceToken, mess.Content)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	json.NewEncoder(w).Encode(&mess)
+}
+
+
+func pushToUser(w http.ResponseWriter, r *http.Request) {
+	// device token
+	// data to push
+
+	util.CheckBodyNil(w, r)
+
+	err, mess := model.DecodeRequestIntoFcmMessage(w, r)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	if len(mess.Username) <= 0 {
+		http.Error(w, "Username cannot be nil", 400)
+		return
+	}
+
+	err = fcm.NotifyAllDevicesOfUser(mess.Username, mess.Content)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+
+	json.NewEncoder(w).Encode(&mess)
+}
+
 // http requests
 //**********************************************************************************//

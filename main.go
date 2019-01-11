@@ -24,6 +24,13 @@ func main() {
 	router.HandleFunc("/Blog/page/{no}", getAllBlogWithPaging).Methods(static.HTTP_GET)
 	router.HandleFunc("/Blog/{id}", getBlogById).Methods(static.HTTP_GET)
 
+	// fmc push notification
+	router.HandleFunc("/Push/AddToken", addToken).Methods(static.HTTP_POST)
+	router.HandleFunc("/Push/RemoveToken", removeToken).Methods(static.HTTP_POST)
+	router.HandleFunc("/Push/PushToDevice", pushToDevice).Methods(static.HTTP_POST)
+	router.HandleFunc("/Push/PushToUser", pushToUser).Methods(static.HTTP_POST)
+
+
 	// chat centrifuge http
 	router.HandleFunc("/Chat/FindUser", findUser).Methods(static.HTTP_POST)
 	router.HandleFunc("/Chat/CreateChannel", createChannel11).Methods(static.HTTP_POST)
@@ -54,3 +61,10 @@ func startHTTPServer(handler http.Handler) {
 		log.Fatal(err)
 	}
 }
+
+
+
+
+
+
+

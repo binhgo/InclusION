@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"github.com/InclusION/chat"
 )
 
 //**********************************************************************************//
@@ -41,8 +42,27 @@ func initCentrifuge() *centrifuge.Node {
 	node.On().Connect(func(ctx context.Context, client *centrifuge.Client, e centrifuge.ConnectEvent) centrifuge.ConnectReply {
 
 		client.On().Subscribe(func(e centrifuge.SubscribeEvent) centrifuge.SubscribeReply {
-			log.Printf("client subscribes on channel %s", e.Channel)
-			return centrifuge.SubscribeReply{}
+
+			client.ID()
+			log.Printf("user id %s", client.UserID())
+			log.Printf("id %s", client.ID())
+			log.Printf("client %x", client)
+
+			ok := chat.ValidateUserJoinRoom(client.UserID())
+
+			if ok {
+				log.Printf("client subscribes on channel %s", e.Channel)
+				return centrifuge.SubscribeReply{}
+
+			} else {
+
+				err1 := centrifuge.Error {
+					Code:    109,
+					Message: "!permission",
+				}
+
+				return centrifuge.SubscribeReply{Error: &err1}
+			}
 		})
 
 		client.On().Publish(func(e centrifuge.PublishEvent) centrifuge.PublishReply {

@@ -8,4 +8,6 @@ var HTTP_POST = "POST"
 var TBL_USERS = "tblU1"
 var TBL_HEALTHS = "tblHealth"
 var TBL_BLOGS = "tblBlog"
+var TBL_DEVICES = "tblDevice"
+var TBL_ROOMS = "tblRoom"
 

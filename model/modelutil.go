@@ -9,6 +9,32 @@ import (
 	"github.com/InclusION/util"
 )
 
+func DecodeRequestIntoFcmMessage(w http.ResponseWriter, r *http.Request) (error, FcmMessage) {
+
+	decoder := json.NewDecoder(r.Body)
+
+	var mess FcmMessage
+	err := decoder.Decode(&mess)
+	if err != nil {
+		return err, mess
+	}
+
+	return nil, mess
+}
+
+func DecodeRequestIntoPhone(w http.ResponseWriter, r *http.Request) (error, Phone) {
+
+	decoder := json.NewDecoder(r.Body)
+
+	var phone Phone
+	err := decoder.Decode(&phone)
+	if err != nil {
+		return err, phone
+	}
+
+	return nil, phone
+}
+
 func DecodeRequestIntoUser(w http.ResponseWriter, r *http.Request) (error, User) {
 
 	decoder := json.NewDecoder(r.Body)

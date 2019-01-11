@@ -41,7 +41,10 @@ type User struct {
 
 
 	// chat
-	ClientId string
+	//ClientId string
+
+	// fcm
+	FcmToken string
 }
 
 
@@ -137,7 +140,8 @@ func (u *User) UpdateById() error  {
 		"coachname" : u.CoachName, "coachphone" : u.CoachPhone,
 		"additionalinfo" : u.AdditionalInfo,"timestamp": u.Timestamp,
 		"loginnonce": u.LoginNonce,
-		"token" : u.Token, "tokenexpirytime" : u.TokenExpiryTime }}
+		"token" : u.Token, "tokenexpirytime" : u.TokenExpiryTime,
+		"fcmtoken" : u.FcmToken }}
 
 	err := mdb.UpdateById(static.TBL_USERS, u.MongoID, updateObject)
 	if err != nil {
@@ -161,7 +165,8 @@ func (u *User) UpdateByUsername() error  {
 		"coachname" : u.CoachName, "coachphone" : u.CoachPhone,
 		"additionalinfo" : u.AdditionalInfo,"timestamp": u.Timestamp,
 		"loginnonce": u.LoginNonce,
-		"token" : u.Token, "tokenexpirytime" : u.TokenExpiryTime}}
+		"token" : u.Token, "tokenexpirytime" : u.TokenExpiryTime,
+		"fcmtoken" : u.FcmToken }}
 
 
 	err := mdb.UpdateByKey(static.TBL_USERS,"username", u.Username, updateObject)
@@ -198,5 +203,11 @@ func (u *User) SoftDelete() error {
 	log.Println("Soft Deleted")
 	return nil
 }
+
+
+//func (u *User) GetAllDevices() error {
+//	p := Phone{}
+//	p.QueryPhonesByUsername(u.Username)
+//}
 
 
