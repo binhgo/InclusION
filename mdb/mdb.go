@@ -12,7 +12,7 @@ func InitDB() *mgo.Database {
 	//mongodb://35.244.12.216:27017
 	//mongodb://localhost:27017
 
-	session, err := mgo.Dial("mongodb://35.200.171.252:27017")
+	session, err := mgo.Dial("mongodb://localhost:27017")
 	if err != nil {
 		log.Fatal(err)
 	}

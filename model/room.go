@@ -1,15 +1,15 @@
 package model
 
 import (
-	"sort"
-	"github.com/InclusION/util"
-	"log"
 	"time"
-	rand2 "math/rand"
+	"sort"
+	"log"
 	"errors"
+	"github.com/InclusION/util"
 	"github.com/InclusION/mdb"
 	"github.com/InclusION/static"
 	"github.com/globalsign/mgo/bson"
+	rand2 "math/rand"
 )
 
 type Room struct {
@@ -19,7 +19,10 @@ type Room struct {
 	Username1 string
 	Username2 string
 	HashTag string
+
+	//Sub *centrifuge.Subscription
 }
+
 
 func (r *Room) CreateRoom1To1() (error, Room) {
 

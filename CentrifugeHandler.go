@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"github.com/InclusION/chat"
 )
 
 //**********************************************************************************//
@@ -37,32 +36,31 @@ func initCentrifuge() *centrifuge.Node {
 	cfg := centrifuge.DefaultConfig
 	cfg.ClientInsecure = true
 	cfg.Publish = true
+	cfg.JoinLeave = true
 	node, _ := centrifuge.New(cfg)
 
 	node.On().Connect(func(ctx context.Context, client *centrifuge.Client, e centrifuge.ConnectEvent) centrifuge.ConnectReply {
 
 		client.On().Subscribe(func(e centrifuge.SubscribeEvent) centrifuge.SubscribeReply {
 
-			client.ID()
-			log.Printf("user id %s", client.UserID())
-			log.Printf("id %s", client.ID())
-			log.Printf("client %x", client)
+			log.Printf("client %s subscribes on channel %s", client.ID() , e.Channel)
+			return centrifuge.SubscribeReply{}
 
-			ok := chat.ValidateUserJoinRoom(client.UserID())
-
-			if ok {
-				log.Printf("client subscribes on channel %s", e.Channel)
-				return centrifuge.SubscribeReply{}
-
-			} else {
-
-				err1 := centrifuge.Error {
-					Code:    109,
-					Message: "!permission",
-				}
-
-				return centrifuge.SubscribeReply{Error: &err1}
-			}
+			//ok := chat.ValidateUserJoinRoom(client.UserID())
+			//
+			//if ok {
+			//	log.Printf("client subscribes on channel %s", e.Channel)
+			//	return centrifuge.SubscribeReply{}
+			//
+			//} else {
+			//
+			//	err1 := centrifuge.Error {
+			//		Code:    109,
+			//		Message: "!permission",
+			//	}
+			//
+			//	return centrifuge.SubscribeReply{Error: &err1}
+			//}
 		})
 
 		client.On().Publish(func(e centrifuge.PublishEvent) centrifuge.PublishReply {

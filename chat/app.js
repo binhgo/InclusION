@@ -89,8 +89,6 @@ $(document).ready(function(){
 
     centrifuge.connect();
 
-
-
     $(".mytext").on("keydown", function(e){
         if (e.which == 13){
             var text = $(this).val();

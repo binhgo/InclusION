@@ -58,6 +58,17 @@ func CreateChannelGroup(r model.Room) (error, model.Room) {
 	return nil, room
 }
 
+
+func CreateRandomChannelID(r model.Room) (error, model.Room) {
+	err, room := r.CreateRandomRoom()
+	if err != nil {
+		return err, room
+	}
+	room.SaveToDB()
+
+	return nil, room
+}
+
 // Join channel is client process so that no need to implement here
 func JoinChannel() {
 
@@ -116,7 +127,7 @@ func ValidateUserJoinRoom(username string) bool {
 	// from centriguge client id -> query username, then check room info to see if user valid
 
 
-	return false
+	return true
 }
 
 
