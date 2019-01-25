@@ -115,11 +115,9 @@ func main() {
 
 	waitExitSignal()
 	log.Printf("END: %s", time.Since(started))
-
 }
 
 
-//e.GetInfo().Client
 func findRoomAndReply(username1 string, question string) {
 	// find correct session and send the message to that only channel
 	for _, room := range rooms {
@@ -203,7 +201,7 @@ func filterQuestion(question string) (string, bool) {
 
 
 func filterAnswer(data string) string {
-	if data == "no answer" {
+	if data == "I am sorry, but I do not understand." {
 		return returnSuggestions()
 	} else {
 		return data
@@ -226,9 +224,7 @@ func returnProducts() string {
 	p3 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
 	p4 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
 	p5 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
-
 	products = append(products, p1, p2, p3, p4, p5)
-
 
 	result, err := json.Marshal(products)
 	if err != nil {
@@ -253,10 +249,7 @@ func returnSuggestions() string {
 	s3 := Suggestion{"Product", "Look for some products", "", "url"}
 	s4 := Suggestion{"Therapy", "Want to find some specialists", "", "url"}
 	s5 := Suggestion{"Chat", "Look for a person to chat", "", "url"}
-
-
 	suggestions = append(suggestions, s1, s2, s3, s4, s5)
-
 
 	result, err := json.Marshal(suggestions)
 	if err != nil {
@@ -282,8 +275,6 @@ func returnEvents() string {
 	e3 := Event{"Vietnam Inclusion", "Vietnam Inclusion 2019", "", time.Now()}
 	e4 := Event{"Thailand Inclusion", "Thailand Inclusion 2019", "", time.Now()}
 	e5 := Event{"Lambada Inclusion", "Lambada Inclusion 2019", "", time.Now()}
-
-
 	events = append(events, e1, e2, e3, e4, e5)
 
 	result, err := json.Marshal(events)
