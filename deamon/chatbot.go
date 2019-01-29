@@ -74,21 +74,24 @@ func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.P
 
 		log.Printf("From client %s. Data: %s \n", e.GetInfo().Client ,string(e.Data))
 
-		r := strings.NewReader(string(e.Data))
-		decoder := json.NewDecoder(r)
+		if isJSON(string(e.Data)) {
+			r := strings.NewReader(string(e.Data))
+			decoder := json.NewDecoder(r)
 
-		var chatReq ChatRequest
-		err := decoder.Decode(&chatReq)
+			var chatReq ChatRequest
+			err := decoder.Decode(&chatReq)
 
-		if err != nil {
-			log.Fatal(err)
-		} else {
-			if len(chatReq.Name) > 0 {
-				log.Printf("before spawnAndSubscribeNewChannel \n")
-				go spawnAndSubscribeNewChannel(sub, e.GetInfo().Client)
-				log.Printf("after spawnAndSubscribeNewChannel \n")
+			if err != nil {
+				log.Fatal(err)
+			} else {
+				if len(chatReq.Name) > 0 {
+					log.Printf("before spawnAndSubscribeNewChannel \n")
+					go spawnAndSubscribeNewChannel(sub, e.GetInfo().Client)
+					log.Printf("after spawnAndSubscribeNewChannel \n")
+				}
 			}
 		}
+
 
 		go findRoomAndReply(e.GetInfo().Client, string(e.Data))
 	}
@@ -141,6 +144,11 @@ func main() {
 	log.Printf("END: %s", time.Since(started))
 }
 
+func isJSON(s string) bool {
+	var js map[string]interface{}
+	return json.Unmarshal([]byte(s), &js) == nil
+}
+
 
 func findRoomAndReply(username1 string, question string) {
 	// find correct session and send the message to that only channel
@@ -175,10 +183,17 @@ func findRoomAndReply(username1 string, question string) {
 }
 
 
-func decodeIntoChatRequest(data string) ChatRequest {
+func decodeIntoChatRequest(data string) (error, ChatRequest) {
 
+	r := strings.NewReader(data)
+	decoder := json.NewDecoder(r)
 
+	var chatReq ChatRequest
+	err := decoder.Decode(&chatReq)
 
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 
