@@ -134,7 +134,7 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths />
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="1440" />
     <option name="height" value="900" />
   </component>
@@ -230,12 +230,13 @@
   <component name="PropertiesComponent">
     <property name="DefaultGoTemplateProperty" value="Go File" />
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="configurable.Global.GOPATH.is.expanded" value="true" />
     <property name="configurable.Module.GOPATH.is.expanded" value="false" />
     <property name="configurable.Project.GOPATH.is.expanded" value="true" />
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="settings.editor.selected.configurable" value="preferences.general" />
   </component>
@@ -263,7 +264,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Go Build.go build github.com/InclusION">
+  <component name="RunManager">
     <configuration default="true" type="GoAppEngineRunConfiguration" factoryName="Go App Engine">
       <working_directory value="$PROJECT_DIR$" />
     </configuration>
@@ -312,18 +313,6 @@
       <package value="github.com/InclusION" />
       <directory value="$PROJECT_DIR$/" />
     </configuration>
-    <list>
-      <item itemvalue="Go Build.go build github.com/InclusION" />
-      <item itemvalue="Go Build.haha" />
-      <item itemvalue="Go Build.go build github.com/InclusION/.idea" />
-      <item itemvalue="Go Build.go build autobot.go" />
-    </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Go Build.go build autobot.go" />
-        <item itemvalue="Go Build.go build github.com/InclusION/.idea" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
