@@ -72,6 +72,8 @@ func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.P
 
 	if e.GetInfo().Client != botClientID {
 
+		log.Printf("From client %s. Data: %s \n", e.GetInfo().Client ,string(e.Data))
+
 		r := strings.NewReader(string(e.Data))
 		decoder := json.NewDecoder(r)
 
@@ -82,7 +84,9 @@ func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.P
 			log.Fatal(err)
 		} else {
 			if len(chatReq.Name) > 0 {
+				log.Printf("before spawnAndSubscribeNewChannel \n")
 				go spawnAndSubscribeNewChannel(sub, e.GetInfo().Client)
+				log.Printf("after spawnAndSubscribeNewChannel \n")
 			}
 		}
 
@@ -171,7 +175,16 @@ func findRoomAndReply(username1 string, question string) {
 }
 
 
+func decodeIntoChatRequest(data string) ChatRequest {
+
+
+
+}
+
+
 func spawnAndSubscribeNewChannel(sub *centrifuge.Subscription, clientId1 string) {
+
+	log.Printf("inside begin spawnAndSubscribeNewChannel \n")
 
 	r := model.Room{Username1: clientId1, Username2:botClientID}
 	err, room := chat.CreateChannel11(r)
@@ -205,6 +218,8 @@ func spawnAndSubscribeNewChannel(sub *centrifuge.Subscription, clientId1 string)
 	if err != nil {
 		log.Printf("ERROR Publish: %s", err)
 	}
+
+	log.Printf("inside end spawnAndSubscribeNewChannel \n")
 }
 
 
