@@ -75,19 +75,15 @@ func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.P
 		log.Printf("From client %s. Data: %s \n", e.GetInfo().Client ,string(e.Data))
 
 		if isJSON(string(e.Data)) {
-			r := strings.NewReader(string(e.Data))
-			decoder := json.NewDecoder(r)
 
-			var chatReq ChatRequest
-			err := decoder.Decode(&chatReq)
-
+			err, chatReq := decodeIntoChatRequest(string(e.Data))
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
 			} else {
 				if len(chatReq.Name) > 0 {
-					log.Printf("before spawnAndSubscribeNewChannel \n")
+					//log.Printf("before spawnAndSubscribeNewChannel \n")
 					go spawnAndSubscribeNewChannel(sub, e.GetInfo().Client)
-					log.Printf("after spawnAndSubscribeNewChannel \n")
+					//log.Printf("after spawnAndSubscribeNewChannel \n")
 				}
 			}
 		}
@@ -192,8 +188,10 @@ func decodeIntoChatRequest(data string) (error, ChatRequest) {
 	err := decoder.Decode(&chatReq)
 
 	if err != nil {
-		log.Fatal(err)
+		return err, chatReq
 	}
+
+	return nil, chatReq
 }
 
 
