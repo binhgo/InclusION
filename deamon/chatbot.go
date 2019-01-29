@@ -25,6 +25,11 @@ type Message struct {
 	ClientId string
 }
 
+type ChatRequest struct {
+	Name string
+	Email string
+}
+
 type eventHandler struct{}
 type subEventHandler struct{}
 
@@ -51,9 +56,9 @@ func (h *eventHandler) OnDisconnect(c *centrifuge.Client, e centrifuge.Disconnec
 func (h *subEventHandler) OnJoin(sub *centrifuge.Subscription, e centrifuge.JoinEvent) {
 	log.Println(fmt.Sprintf("User %s (client ID %s) joined channel %s", e.User, e.Client, sub.Channel()))
 
-	if e.Client != botClientID {
-		go spawnAndSubscribeNewChannel(sub, e.Client)
-	}
+	//if e.Client != botClientID {
+	//	go spawnAndSubscribeNewChannel(sub, e.Client)
+	//}
 }
 
 
@@ -66,6 +71,21 @@ func (h *subEventHandler) OnPublish(sub *centrifuge.Subscription, e centrifuge.P
 	log.Println(fmt.Sprintf("New publication received from channel %s: %s", sub.Channel(), string(e.Data)))
 
 	if e.GetInfo().Client != botClientID {
+
+		r := strings.NewReader(string(e.Data))
+		decoder := json.NewDecoder(r)
+
+		var chatReq ChatRequest
+		err := decoder.Decode(&chatReq)
+
+		if err != nil {
+			log.Fatal(err)
+		} else {
+			if len(chatReq.Name) > 0 {
+				go spawnAndSubscribeNewChannel(sub, e.GetInfo().Client)
+			}
+		}
+
 		go findRoomAndReply(e.GetInfo().Client, string(e.Data))
 	}
 }
@@ -152,6 +172,7 @@ func findRoomAndReply(username1 string, question string) {
 
 
 func spawnAndSubscribeNewChannel(sub *centrifuge.Subscription, clientId1 string) {
+
 	r := model.Room{Username1: clientId1, Username2:botClientID}
 	err, room := chat.CreateChannel11(r)
 	if err != nil {
