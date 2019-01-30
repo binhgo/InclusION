@@ -30,6 +30,15 @@ type ChatRequest struct {
 	Email string
 }
 
+
+type ChatResponse struct {
+	Type string
+	Mess string
+	Events []Event
+	Products []Product
+	Suggestions []Suggestion
+}
+
 type eventHandler struct{}
 type subEventHandler struct{}
 
@@ -55,7 +64,6 @@ func (h *eventHandler) OnDisconnect(c *centrifuge.Client, e centrifuge.Disconnec
 
 func (h *subEventHandler) OnJoin(sub *centrifuge.Subscription, e centrifuge.JoinEvent) {
 	log.Println(fmt.Sprintf("User %s (client ID %s) joined channel %s", e.User, e.Client, sub.Channel()))
-
 	//if e.Client != botClientID {
 	//	go spawnAndSubscribeNewChannel(sub, e.Client)
 	//}
@@ -253,7 +261,17 @@ func filterAnswer(data string) string {
 	if data == "I am sorry, but I do not understand." {
 		return returnSuggestions()
 	} else {
-		return data
+
+		chatRes := ChatResponse{}
+		chatRes.Type = "Message"
+		chatRes.Mess = data
+
+		result, err := json.Marshal(&chatRes)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		return string(result)
 	}
 }
 
@@ -275,7 +293,11 @@ func returnProducts() string {
 	p5 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
 	products = append(products, p1, p2, p3, p4, p5)
 
-	result, err := json.Marshal(products)
+	chatRes := ChatResponse{}
+	chatRes.Type = "Products"
+	chatRes.Products = products
+
+	result, err := json.Marshal(&chatRes)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -300,7 +322,11 @@ func returnSuggestions() string {
 	s5 := Suggestion{"Chat", "Look for a person to chat", "", "url"}
 	suggestions = append(suggestions, s1, s2, s3, s4, s5)
 
-	result, err := json.Marshal(suggestions)
+	chatRes := ChatResponse{}
+	chatRes.Type = "Suggestions"
+	chatRes.Suggestions = suggestions
+
+	result, err := json.Marshal(&chatRes)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -326,7 +352,11 @@ func returnEvents() string {
 	e5 := Event{"Lambada Inclusion", "Lambada Inclusion 2019", "", time.Now()}
 	events = append(events, e1, e2, e3, e4, e5)
 
-	result, err := json.Marshal(events)
+	chatRes := ChatResponse{}
+	chatRes.Type = "Events"
+	chatRes.Events = events
+
+	result, err := json.Marshal(&chatRes)
 	if err != nil {
 		log.Fatal(err)
 	}
