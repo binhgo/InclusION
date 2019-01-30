@@ -1,4 +1,5 @@
 from chatterbot import ChatBot
+from chatterbot.trainers import ChatterBotCorpusTrainer
 import sys, getopt
 
 
@@ -13,11 +14,6 @@ bot = ChatBot(
             'import_path': 'chatterbot.logic.SpecificResponseAdapter',
             'input_text': 'Help me',
             'output_text': 'Ok, plz contact us: 09096786789 '
-        },
-        {
-            'import_path': 'chatterbot.logic.LowConfidenceAdapter',
-            'threshold': 0.5,
-            'default_response': 'I am sorry, but I do not understand.'
         }
     ],
     #input_adapter="chatterbot.input.TerminalAdapter",
@@ -25,12 +21,16 @@ bot = ChatBot(
     database="../database.db"
     # un-comment the line below to train the bot before calling it from golang
     # train 1 time only
-    #trainer="chatterbot.trainers.ChatterBotCorpusTrainer"
+    
 )
 
 # un-comment the line below to train the bot before calling it from golang
 # train 1 time only
-#bot.train('chatterbot.corpus.english')
+# bot.train('chatterbot.corpus.english')
+# trainer = ChatterBotCorpusTrainer(bot)
+# trainer.train(
+#    "chatterbot.corpus.english"
+#)
 
 def main(argv):
     try:

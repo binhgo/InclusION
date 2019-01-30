@@ -197,13 +197,22 @@ input:focus{
     float: right;
 }
 
+.suggest-items {
+    display: inline-flex;
+    overflow-x: visible;
+}
+
 .suggest-item {
-    max-height: 200px;
+    max-width: 250px;
+    padding: 0 25px;
+    margin: auto;
+    display: block;
+    text-align: center;
 }
 
 .suggest-item .suggest-img {
     max-height: 100px;
-    width: auto;
+    max-width: 200px;
     margin: auto;
     display: block;
 }
@@ -212,10 +221,15 @@ input:focus{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-top: 5px;
 }
 
 .suggest-item .suggest-description {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.disabled {
+    display: none;
 }
