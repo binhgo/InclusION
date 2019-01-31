@@ -100,7 +100,8 @@ function getResponse(data) {
 $(document).ready(function(){
 
     // Create Centrifuge object with Websocket endpoint address set in main.go
-    var centrifuge = new Centrifuge('ws://localhost:8080/connection/websocket');
+    var centrifuge = new Centrifuge('ws://'+ window.location.hostname +':'+ window.location.port +'/connection/websocket');
+	// var centrifuge = new Centrifuge('ws://localhost:8080/connection/websocket');
 
     centrifuge.on('connect', function(ctx) {
         console.log('connected');
@@ -129,7 +130,7 @@ $(document).ready(function(){
                                     var resData = JSON.parse(message.data);
                                     console.log(resData);
                                     if (resData.Type === "Message") {
-                                        insertChat("you", JSON.parse(resData.Mess), 0);
+                                        insertChat("you", resData.Mess, 0);
                                     } else {
                                         var data = getResponse(resData);
                                         initItem(data.data, 1000, data.img);
@@ -148,6 +149,10 @@ $(document).ready(function(){
                                     }
                                 }
                             });
+							
+							$(document).on("click", "#btn_mytext", function () {
+								$("#my_text").trigger({type: 'keydown', which: 13, keyCode: 13});
+							});
                         });
                     }
                 }
