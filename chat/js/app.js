@@ -65,20 +65,30 @@ function resetChat(){
     $("ul.message_body").empty();
 }
 
-function initItem(data, time, img) {
-    setTimeout(function() {
-        data.forEach(val => {
-            var item = "<div class=\"suggest-item\">" +
-                "<img src=\""+ img +"\" class=\"img-fluid suggest-img\">" +
-                "<a href='https://www.lazada.vn/products/apple-iphone-xs-max-i248162747-s324087916.html' target='_blank'>" +
-                "<h5 class=\"suggest-title\">" + val.Name + "</h5>" +
-                "</a>" +
-                "<p class=\"suggest-description\">" + val.Description + "</p>" +
-                "</div>";
+function initItem(data, img) {
+    var item = "<li>" +
+        "<div class=\"d-flex float-right mr-4\">" +
+        "<div class=\"text-r\">" +
+        "<div class=\"row mt-1 mb-1 text-center\">";
 
-            $(".suggest-items").prepend(item);
-        });
-    }, time);
+    data.forEach(val => {
+        item += "<div class=\"col-lg-3 col-12 suggest-item\">" +
+            "<img src=\""+ img +"\" class=\"img-fluid suggest-img\">" +
+            "<a href='https://www.lazada.vn/products/apple-iphone-xs-max-i248162747-s324087916.html' target='_blank'>" +
+            "<h5 class=\"suggest-title\">"+ val.Name +"</h5>" +
+            "</a>" +
+            "<p class=\"suggest-description\">" + val.Description + "</p>" +
+            "</div>";
+
+        $(".suggest-items").prepend(item);
+    });
+    item += "</div>" +
+        "</div>" +
+        "<img src=\"images/you.png\" alt=\"avatar\" class=\"rounded-circle\">" +
+        "</div>" +
+        "</li>";
+
+    $("ul.message_body").append(item).scrollTop($("ul.message_body").prop('scrollHeight'));
 }
 
 function getResponse(data) {
@@ -113,14 +123,14 @@ $(document).ready(function(){
     });
 
     if (channelID === 'chatbot') {
-        $("#chat_content").load("../chat/register.html", "", function () {
+        $("#chat_content").load("../chat/register.html?v=2", "", function () {
 
             var sub = centrifuge.subscribe(channelID, function (message) {
 
                 if (typeof message.data === 'string') {
 
                     if (JSON.parse(message.data).ClientId === clientID) {
-                        $("#chat_content").load("../chat/chat.html", "", function () {
+                        $("#chat_content").load("../chat/chat.html?v=1", "", function () {
                             $("#your_name").html(name);
 
                             channelID = JSON.parse(message.data).ChannelId;
@@ -133,7 +143,9 @@ $(document).ready(function(){
                                         insertChat("you", resData.Mess, 0);
                                     } else {
                                         var data = getResponse(resData);
-                                        initItem(data.data, 1000, data.img);
+                                        setTimeout(function () {
+                                            initItem(data.data, data.img);
+                                        }, 1000);
                                     }
                                 }
                             });

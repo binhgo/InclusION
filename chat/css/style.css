@@ -191,43 +191,30 @@ input:focus{
     float: right;
 }
 
+.chat_dialog .chat_body .message_body .text-r .suggest-item {
+    max-width: 200px;
+}
+
+.chat_dialog .chat_body .message_body .text-r .suggest-item .suggest-title {
+    font-size: 18px;
+    padding-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat_dialog .chat_body .message_body .text-r .suggest-item .suggest-description {
+    font-size: 15px;
+    padding-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .chat_dialog .chat_body .message_body .text-r .message-text {
     max-width: 500px;
     word-wrap: break-word;
     float: right;
-}
-
-.suggest-items {
-    display: inline-flex;
-    overflow-x: visible;
-}
-
-.suggest-item {
-    max-width: 250px;
-    padding: 0 25px;
-    margin: auto;
-    display: block;
-    text-align: center;
-}
-
-.suggest-item .suggest-img {
-    max-height: 100px;
-    max-width: 200px;
-    margin: auto;
-    display: block;
-}
-
-.suggest-item .suggest-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding-top: 5px;
-}
-
-.suggest-item .suggest-description {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .disabled {
