@@ -1,28 +1,77 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!------ Include the above in your HEAD tag ---------->
-    <link rel="stylesheet" href="style.css">
-    <script src="app.js"></script>
-    <script type="text/javascript" src="https://rawgit.com/centrifugal/centrifuge-js/c2/dist/centrifuge.min.js"></script>
-</head>
-<body>
-<div class="col-sm-3 col-sm-offset-4 frame">
-    <ul></ul>
-    <div>
-        <div class="msj-rta macro">
-            <div class="text text-r" style="background:whitesmoke !important">
-                <input class="mytext" placeholder="Type a message"/>
+<div class="container-fluid h-100" id="chat_layout">
+    <div class="row justify-content-center h-100">
+        <div class="col-3 contact_cards">
+            <div class="">
+                <ul class="contacts">
+                    <li class="active">
+                        <div class="d-flex bd-highlight ml-4">
+                            <div class="img_cont">
+                                <img src="images/you.png" class="rounded-circle user_img">
+                                <span class="online_icon"></span>
+                            </div>
+                            <div class="user_info">
+                                <span>Bot</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="">
+                        <div class="d-flex bd-highlight ml-4">
+                            <div class="img_cont">
+                                <img src="images/me.png" class="rounded-circle user_img">
+                                <span class="online_icon"></span>
+                            </div>
+                            <div class="user_info">
+                                <span>Vladimir</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="">
+                        <div class="d-flex bd-highlight ml-4">
+                            <div class="img_cont">
+                                <img src="images/me.png" class="rounded-circle user_img">
+                                <span class="online_icon"></span>
+                            </div>
+                            <div class="user_info">
+                                <span>John Doe</span>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="">
+                        <div class="d-flex bd-highlight ml-4">
+                            <div class="img_cont">
+                                <img src="images/me.png" class="rounded-circle user_img">
+                                <span class="online_icon"></span>
+                            </div>
+                            <div class="user_info">
+                                <span>Michel</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div style="padding:10px;">
-            <span class="glyphicon glyphicon-share-alt"></span>
+        <div class="col-9">
+            <div class="chat_dialog card">
+                <div class="chat_header border-bottom card-header">
+                    <div class="name">
+                        <span class="font-weight-bold" id="your_name">Name</span>
+                    </div>
+                </div>
+                <div class="chat_body card-body">
+                    <ul class="message_body">
+                    </ul>
+                </div>
+                <div class="chat_input card-footer">
+                    <div class="form-group">
+						<div class="input-group mb-3">
+							<input type="text" placeholder="Type a message" class="form-control" id="my_text" autofocus>
+							<div class="input-group-append">
+								<button class="btn btn-outline-secondary" type="button" id="btn_mytext">Send</button>
+							</div>
+						</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-</body>
-</html>
