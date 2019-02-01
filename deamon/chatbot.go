@@ -286,11 +286,11 @@ type Product struct {
 func returnProducts() string {
 	var products []Product
 
-	p1 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
-	p2 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
-	p3 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
-	p4 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
-	p5 := Product{"Rocco Trunki", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh tạo sự tiện lợi cho cả mẹ và bé, nhưng không kém phần ngộ nghĩnh, đáng yêu và thân thiện với bé.", "url"}
+	p1 := Product{"iPhone", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế ", "https://salt.tikicdn.com/cache/w1200/media/catalog/product/h/l/hlc659grn-1.u2566.d20170627.t153603.856426.jpg"}
+	p2 := Product{"iPad", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế", "https://salt.tikicdn.com/cache/w1200/media/catalog/product/h/l/hlc659grn-1.u2566.d20170627.t153603.856426.jpg"}
+	p3 := Product{"iPod", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết kế thông minh", "https://salt.tikicdn.com/cache/w1200/media/catalog/product/h/l/hlc659grn-1.u2566.d20170627.t153603.856426.jpg"}
+	p4 := Product{"iWatch", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với", "https://salt.tikicdn.com/cache/w1200/media/catalog/product/h/l/hlc659grn-1.u2566.d20170627.t153603.856426.jpg"}
+	p5 := Product{"iMac", "Vali Trẻ Em Siêu Xe Rocco Trunki 0321-GB01 với thiết", "https://salt.tikicdn.com/cache/w1200/media/catalog/product/h/l/hlc659grn-1.u2566.d20170627.t153603.856426.jpg"}
 	products = append(products, p1, p2, p3, p4, p5)
 
 	chatRes := ChatResponse{}
