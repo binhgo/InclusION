@@ -8,11 +8,7 @@ var clientID;
 var channelID = "chatbot";
 var name = '';
 
-var images = {
-    product: "images/product1.png",
-    events: "images/events.jpeg",
-    suggest: "images/img.jpeg"
-};
+var image = "images/image.png";
 
 function formatAMPM(date) {
     var hours = date.getHours();
@@ -65,13 +61,23 @@ function resetChat(){
     $("ul.message_body").empty();
 }
 
-function initItem(data, img) {
+function checkUrl(url) {
+    var expression = /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9]\.[^\s]{2,})/;
+    var regex = new RegExp(expression);
+    if (url.match(regex))
+        return true;
+    return false;
+}
+
+function initItem(data) {
     var item = "<li>" +
         "<div class=\"d-flex float-right mr-4\">" +
         "<div class=\"text-r\">" +
         "<div class=\"row mt-1 mb-1 text-center\">";
 
     data.forEach(val => {
+        var img = checkUrl(val.Image) ? val.Image : image;
+
         item += "<div class=\"col-lg-3 col-12 suggest-item\">" +
             "<img src=\""+ img +"\" class=\"img-fluid suggest-img\">" +
             "<a href='https://www.lazada.vn/products/apple-iphone-xs-max-i248162747-s324087916.html' target='_blank'>" +
@@ -94,13 +100,13 @@ function initItem(data, img) {
 function getResponse(data) {
     switch (data.Type) {
         case "Events":
-            return {data: data.Events, img: images.events};
+            return data.Events;
             break;
         case "Products":
-            return {data: data.Products, img: images.product};
+            return data.Products;
             break;
         case "Suggestions":
-            return {data: data.Suggestions, img: images.suggest};
+            return data.Suggestions;
             break;
         default:
             return data.Mess;
@@ -144,7 +150,7 @@ $(document).ready(function(){
                                     } else {
                                         var data = getResponse(resData);
                                         setTimeout(function () {
-                                            initItem(data.data, data.img);
+                                            initItem(data);
                                         }, 1000);
                                     }
                                 }
